@@ -1,900 +1,286 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#171b19">
-<title>Opening Reps | Chess Trainer</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#161512">
+<title>Opening Reps</title>
 <style>
-:root {
-  --bg: #141815;
-  --panel: #202622;
-  --panel2: #29312b;
-  --border: #374139;
-  --text: #edf1eb;
-  --muted: #a3afa4;
-  --green: #80b58e;
-  --green-dark: #315b3d;
-  --cream: #f0e5cc;
-  --sage: #8ca98b;
+:root{
+  --bg:#161512;--panel:#211f1b;--panel2:#292722;--text:#f1eee7;--muted:#aaa49a;
+  --green:#629924;--green2:#769f3d;--cream:#f0d9b5;--brown:#b58863;--danger:#b85c5c;
+  --line:#3a3731;--accent:#9fbd62;
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-button, input, select { font: inherit; }
-
-button {
-  border: 1px solid var(--border);
-  background: var(--panel2);
-  color: var(--text);
-  padding: 10px 12px;
-  border-radius: 9px;
-  cursor: pointer;
-}
-
-button:active { transform: scale(.98); }
-
-button.primary {
-  background: var(--green-dark);
-  border-color: #507a59;
-}
-
-button:hover { border-color: var(--green); }
-
-input, select {
-  width: 100%;
-  padding: 11px;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-  background: #151a16;
-  color: var(--text);
-}
-
-header {
-  padding: 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.logo {
-  font-size: 29px;
-  width: 43px;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  background: var(--green-dark);
-  border-radius: 12px;
-}
-
-h1 { font-size: 20px; margin: 0; }
-
-.subtitle {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 3px;
-}
-
-nav {
-  display: flex;
-  gap: 5px;
-}
-
-nav button {
-  border-color: transparent;
-  background: transparent;
-  color: var(--muted);
-}
-
-nav button.active {
-  color: var(--green);
-  background: var(--panel);
-}
-
-main {
-  max-width: 1250px;
-  margin: auto;
-  padding: 20px;
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
-  gap: 20px;
-  align-items: start;
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 15px;
-}
-
-.eyebrow {
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  color: var(--green);
-  font-weight: 750;
-}
-
-h2 { font-size: 16px; margin: 5px 0 12px; }
-
-.status {
-  background: var(--panel2);
-  padding: 12px;
-  border-radius: 9px;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-.status small {
-  display: block;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  width: 100%;
-  max-width: 610px;
-  aspect-ratio: 1;
-  margin: auto;
-  border: 4px solid #252c27;
-  border-radius: 3px;
-  overflow: hidden;
-  box-shadow: 0 12px 35px #0005;
-}
-
-.square {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-width: 0;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  color: inherit;
-}
-
-.light { background: var(--cream); }
-.dark { background: var(--sage); }
-
-.square.selected {
-  box-shadow: inset 0 0 0 4px #e2c85c;
-}
-
-.square.last {
-  background-image: linear-gradient(#e9d65c66, #e9d65c66);
-}
-
-.square.target::after {
-  content: "";
-  position: absolute;
-  width: 25%;
-  aspect-ratio: 1;
-  background: #253e2b80;
-  border-radius: 50%;
-}
-
-.square .piece {
-  font-family: "DejaVu Sans", "Arial Unicode MS", serif;
-  font-size: clamp(26px, 7vw, 62px);
-  line-height: 1;
-  z-index: 1;
-  user-select: none;
-}
-
-.piece.white {
-  color: #fffaf0;
-  text-shadow:
-    -1px -1px 1px #333,
-    1px -1px 1px #333,
-    -1px 1px 1px #333,
-    1px 1px 1px #333,
-    0 2px 2px #555;
-}
-
-.piece.black {
-  color: #20251f;
-  text-shadow: 0 1px 1px #ffffff55;
-}
-
-.coordinates {
-  position: absolute;
-  top: 2px;
-  left: 3px;
-  font-size: 10px;
-  font-weight: bold;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.light .coordinates { color: #68836a; }
-.dark .coordinates { color: #f8efd9; }
-
-.board-controls {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 12px;
-}
-
-.board-controls button { flex: 1; }
-
-.moves {
-  background: #151a16;
-  border-radius: 9px;
-  padding: 10px;
-  margin-top: 12px;
-  min-height: 48px;
-  font-size: 13px;
-  line-height: 2;
-  overflow-wrap: anywhere;
-}
-
-.move-button {
-  display: inline-block;
-  padding: 2px 5px;
-  margin: 1px;
-  border: 0;
-  background: transparent;
-  border-radius: 4px;
-  color: var(--text);
-}
-
-.move-button.active {
-  background: var(--green-dark);
-}
-
-.field { margin: 12px 0; }
-
-.field label {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-  margin-bottom: 6px;
-}
-
-.full { width: 100%; }
-
-.line-item {
-  display: block;
-  width: 100%;
-  text-align: left;
-  margin-top: 7px;
-  overflow-wrap: anywhere;
-}
-
-.line-item small {
-  display: block;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.empty {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 15px 0;
-}
-
-footer {
-  color: var(--muted);
-  font-size: 11px;
-  text-align: center;
-  padding: 12px;
-}
-
-@media (min-width: 850px) {
-  .board-area { padding: 5px 12px; }
-}
-
-@media (max-width: 760px) {
-  header { padding: 13px; flex-wrap: wrap; }
-  nav { width: 100%; }
-  nav button { flex: 1; padding: 8px 4px; }
-  main { padding: 12px; }
-  .layout { grid-template-columns: 1fr; gap: 4px; }
-  .board-area { padding: 0; }
-  .board { max-width: 540px; }
-  .right-column { display: grid; grid-template-columns: 1fr; }
-  .square .piece { font-size: clamp(27px, 10vw, 56px); }
-}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer}
+button:hover{border-color:#575249}
+button.primary{background:var(--green);border-color:var(--green);font-weight:700}
+button.danger{color:#ffb3b3}
+input,select{width:100%;background:#171613;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px}
+header{position:sticky;top:0;z-index:10;background:rgba(22,21,18,.96);border-bottom:1px solid var(--line);padding:12px 14px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1100px;margin:auto}
+.brand h1{font-size:20px;margin:0}
+.brand small{color:var(--muted)}
+main{max-width:1100px;margin:auto;padding:14px}
+.layout{display:grid;grid-template-columns:minmax(280px,680px) minmax(260px,1fr);gap:16px;align-items:start}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.side{order:2}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.board-wrap{width:min(100%,680px);margin:auto}
+.board{width:100%;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(8,1fr);border-radius:4px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3)}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sq.light{background:var(--cream)}.sq.dark{background:var(--brown)}
+.sq.selected{box-shadow:inset 0 0 0 4px rgba(246,246,80,.72)}
+.sq.last{background-image:linear-gradient(rgba(246,246,80,.22),rgba(246,246,80,.22))}
+.sq.legal:after{content:"";width:28%;height:28%;border-radius:50%;background:rgba(30,30,20,.28);position:absolute}
+.sq.capture:after{content:"";position:absolute;inset:7%;border:5px solid rgba(30,30,20,.28);border-radius:50%}
+.piece{font-family:"Noto Sans Symbols 2","Segoe UI Symbol","DejaVu Sans",sans-serif;font-size:clamp(30px,9vw,68px);line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.45));z-index:1}
+.coord{position:absolute;font-size:10px;font-weight:700;opacity:.75}
+.file{right:3px;bottom:2px}.rank{left:3px;top:2px}
+.light .coord{color:#8b6b4e}.dark .coord{color:#f0d9b5}
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.status{margin:10px 0 0;padding:9px 10px;border-radius:9px;background:#191815;color:var(--muted);min-height:38px}
+.section-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.moves{display:flex;flex-wrap:wrap;gap:5px;max-height:230px;overflow:auto}
+.move{padding:6px 8px;border-radius:7px;background:#181714;border:1px solid transparent;cursor:pointer}
+.move.current{border-color:var(--green2);background:#25331a}
+.move .num{color:var(--muted);margin-right:4px}
+.variations{display:grid;gap:7px}
+.var{padding:9px;background:#191815;border:1px solid var(--line);border-radius:9px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.var strong{font-size:13px}.var span{color:var(--muted);font-size:12px}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{flex:1}.tabs .active{background:var(--green);border-color:var(--green)}
+.hidden{display:none!important}
+details{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+summary{cursor:pointer;color:var(--accent);font-weight:650}
+.help{font-size:13px;color:var(--muted);line-height:1.45}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f0f0d;border:1px solid var(--line);padding:10px 14px;border-radius:10px;display:none;z-index:50}
 </style>
 </head>
-
 <body>
-
-<header>
-  <div class="brand">
-    <div class="logo">♞</div>
-    <div>
-      <h1>Opening Reps</h1>
-      <div class="subtitle">Your repertoire. Your moves. Your preparation.</div>
-    </div>
-  </div>
-
-  <nav>
-    <button class="active" onclick="showSection('train',this)">Train</button>
-    <button onclick="showSection('build',this)">Line Builder</button>
-    <button onclick="showSection('repertoire',this)">My Lines</button>
-  </nav>
-</header>
+<header><div class="brand"><div><h1>♞ Opening Reps</h1><small>Build your line. Then repeat it.</small></div><button id="newBtn">New line</button></div></header>
 
 <main>
-  <div class="layout">
+<div class="layout">
+<section>
+<div class="card board-wrap">
+  <div id="board" class="board" aria-label="Chess board"></div>
+  <div class="controls">
+    <button id="back">← Back</button><button id="forward">Forward →</button>
+    <button id="flip">Flip</button><button id="start">Start</button>
+    <button id="practice" class="primary">Practise this line</button>
+  </div>
+  <div id="status" class="status">Build a line by making moves on the board.</div>
+</div>
+</section>
 
-    <section class="board-area">
-      <div class="panel">
-        <div class="eyebrow" id="sectionLabel">YOUR TRAINING BOARD</div>
-        <h2 id="openingTitle">Build your opening repertoire</h2>
+<aside class="side">
+<div class="card">
+  <div class="tabs"><button id="buildTab" class="active">Build</button><button id="trainTab">Train</button></div>
 
-        <div class="status" id="status">
-          Make a move on the board to get started.
-          <small>Tap a piece, then tap its destination.</small>
-        </div>
+  <div id="buildPanel">
+    <p class="section-title">Current line</p>
+    <input id="lineName" placeholder="Line name, e.g. Italian — Two Knights">
+    <div class="controls"><button id="saveLine" class="primary">Save line</button><button id="copyPgn">Copy PGN</button></div>
 
-        <div class="board" id="board" aria-label="Chessboard"></div>
+    <details open>
+      <summary>Moves</summary>
+      <div id="moves" class="moves" style="margin-top:9px"></div>
+    </details>
 
-        <div class="board-controls">
-          <button onclick="stepBack()">← Back</button>
-          <button onclick="stepForward()">Forward →</button>
-          <button onclick="flipBoard()">⇅ Flip</button>
-          <button onclick="resetBoard()">↺ Reset</button>
-        </div>
+    <details open>
+      <summary>Variations from this position</summary>
+      <p class="help">Make a move from the current position to create a branch. Existing branches are preserved. Tap any move to jump there, then make a different move to start a sideline.</p>
+      <div id="variations" class="variations"></div>
+    </details>
 
-        <div class="moves" id="moves">No moves yet.</div>
+    <details>
+      <summary>Saved repertoire</summary>
+      <div id="saved" class="variations" style="margin-top:9px"></div>
+    </details>
+
+    <details>
+      <summary>Backup</summary>
+      <div class="controls">
+        <button id="exportBtn">Export backup</button>
+        <button id="importBtn">Import backup</button>
       </div>
-
-      <div class="panel">
-        <div class="eyebrow">CURRENT POSITION</div>
-        <h2>Move information</h2>
-        <div class="empty" id="positionInfo">
-          Play moves to create your line. Select a move above to jump back to that position.
-        </div>
-        <div class="divider"></div>
-        <button class="full" onclick="copyPGN()">Copy PGN</button>
-        <p class="empty">PGN lets you move your lines between compatible chess tools.</p>
-      </div>
-    </section>
-
-    <aside class="right-column">
-
-      <div class="panel" id="builderPanel">
-        <div class="eyebrow">LINE BUILDER</div>
-        <h2>Save your line</h2>
-        <p class="empty">
-          Play the moves on the board, then save the sequence. To create a sideline, load a saved line, go back to the branching position, and play a different move. Save it with a different name.
-        </p>
-
-        <div class="field">
-          <label for="lineName">Opening / variation name</label>
-          <input id="lineName" placeholder="e.g. Italian — 3...Be7">
-        </div>
-
-        <div class="field">
-          <label for="playerColour">Moves you want to memorise</label>
-          <select id="playerColour">
-            <option value="w">I play White</option>
-            <option value="b">I play Black</option>
-          </select>
-        </div>
-
-        <button class="primary full" onclick="saveLine()">＋ Save current line</button>
-
-        <div class="divider"></div>
-
-        <div class="eyebrow">QUICK START</div>
-        <h2>Try a position</h2>
-        <button class="full" onclick="loadExample()">Load Italian Game example</button>
-        <p class="empty">Loads 1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5.</p>
-      </div>
-
-      <div class="panel">
-        <div class="eyebrow">MY REPERTOIRE</div>
-        <h2>Saved lines <span id="lineCount">(0)</span></h2>
-        <div id="savedLines">
-          <p class="empty">Your saved lines will appear here.</p>
-        </div>
-        <div class="divider"></div>
-        <button class="full" onclick="exportBackup()">Export repertoire backup</button>
-        <div class="field">
-          <label for="importFile">Restore a backup</label>
-          <input type="file" id="importFile" accept=".json,application/json">
-        </div>
-        <button class="full" onclick="importBackup()">Import backup</button>
-      </div>
-
-    </aside>
+      <input id="importFile" type="file" accept=".json" class="hidden">
+    </details>
   </div>
 
-  <footer>
-    Opening Reps · Personal chess training · Your repertoire is stored in this browser
-  </footer>
+  <div id="trainPanel" class="hidden">
+    <p class="section-title">Training mode</p>
+    <select id="mode"><option value="learning">Learning Mode</option><option value="strict">Strict Mode</option></select>
+    <div class="controls"><button id="restartTrain" class="primary">Start training</button></div>
+    <div id="trainInfo" class="status">Choose a saved line, then start training.</div>
+  </div>
+</div>
+</aside>
+</div>
 </main>
+<div id="toast" class="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.4.0/chess.min.js"></script>
 <script>
-const files = "abcdefgh";
-const pieceSymbols = {
-  wk:"♔", wq:"♕", wr:"♖", wb:"♗", wn:"♘", wp:"♙",
-  bk:"♚", bq:"♛", br:"♜", bb:"♝", bn:"♞", bp:"♟"
-};
+const PIECES={w:{p:"♙",n:"♘",b:"♗",r:"♖",q:"♕",k:"♔"},b:{p:"♟",n:"♞",b:"♝",r:"♜",q:"♛",k:"♚"}};
+const START="start";
+let tree={id:"root",fen:null,move:null,san:null,uci:null,children:[]};
+let current=tree, orientation="w", selected=null, training=null;
+let dbKey="openingReps.v2";
+let saved=JSON.parse(localStorage.getItem(dbKey)||"[]");
 
-let game = new Chess();
-let flipped = false;
-let selected = null;
-let legalTargets = [];
-let historyAt = 0;
-let historyMoves = [];
-let lastMove = null;
-let currentLineName = "";
-let currentColour = "w";
-
-function getHistory() {
-  return game.history({ verbose: true });
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+function chessAt(node){
+  const c=new Chess();
+  const path=[]; let n=node; while(n&&n.move){path.unshift(n.move);n=n.parent}
+  path.forEach(m=>c.move(m));
+  return c;
 }
+function annotateParents(n,parent=null){n.parent=parent;(n.children||[]).forEach(x=>annotateParents(x,n))}
+function currentPath(n){const a=[];while(n&&n.move){a.unshift(n);n=n.parent}return a}
+function sanList(n){return currentPath(n).map(x=>x.san)}
+function nodeDepth(n){return currentPath(n).length}
+function boardFen(){return chessAt(current).fen()}
 
-function rebuildTo(ply) {
-  const oldHistory = getHistory();
-  game.reset();
-
-  for (let i = 0; i < Math.min(ply, oldHistory.length); i++) {
-    const m = oldHistory[i];
-    game.move({ from: m.from, to: m.to, promotion: m.promotion || "q" });
+function renderBoard(){
+  const c=chessAt(current), board=document.getElementById("board"); board.innerHTML="";
+  const files=orientation==="w"?["a","b","c","d","e","f","g","h"]:["h","g","f","e","d","c","b","a"];
+  const ranks=orientation==="w"?[8,7,6,5,4,3,2,1]:[1,2,3,4,5,6,7,8];
+  const hist=c.history({verbose:true}), last=hist.at(-1);
+  for(const r of ranks)for(const f of files){
+    const sq=f+r, el=document.createElement("div"), piece=c.get(sq);
+    const light=((f.charCodeAt(0)-97)+r)%2===0;
+    el.className="sq "+(light?"light":"dark");
+    if(selected===sq)el.classList.add("selected");
+    if(last&&(last.from===sq||last.to===sq))el.classList.add("last");
+    if(selected){
+      const moves=c.moves({square:selected,verbose:true});
+      const mv=moves.find(x=>x.to===sq); if(mv)el.classList.add(piece?"capture":"legal");
+    }
+    if(piece){const p=document.createElement("span");p.className="piece";p.textContent=PIECES[piece.color][piece.type];el.appendChild(p)}
+    if((orientation==="w"&&r===1)||(orientation==="b"&&r===8)){const z=document.createElement("span");z.className="coord file";z.textContent=f;el.appendChild(z)}
+    if((orientation==="w"&&f==="a")||(orientation==="b"&&f==="h")){const z=document.createElement("span");z.className="coord rank";z.textContent=r;el.appendChild(z)}
+    el.onclick=()=>tapSquare(sq);board.appendChild(el);
   }
-
-  historyAt = Math.min(ply, oldHistory.length);
-  selected = null;
-  legalTargets = [];
-  render();
+  document.getElementById("status").textContent=`Position ${nodeDepth(current)} · ${c.turn()==="w"?"White":"Black"} to move`;
+  renderMoves();renderVariations();
 }
-
-function render() {
-  renderBoard();
-  renderMoves();
-  renderStatus();
-  renderPositionInfo();
+function tapSquare(sq){
+  if(training){trainingTap(sq);return}
+  const c=chessAt(current), p=c.get(sq);
+  if(selected){
+    const move=c.moves({square:selected,verbose:true}).find(m=>m.to===sq);
+    if(move){
+      makeMove(selected,sq);selected=null;return;
+    }
+  }
+  selected=p&&p.color===c.turn()?sq:null;renderBoard();
 }
-
-function renderBoard() {
-  const boardEl = document.getElementById("board");
-  boardEl.innerHTML = "";
-
-  const ranks = flipped ? [1,2,3,4,5,6,7,8] : [8,7,6,5,4,3,2,1];
-  const cols = flipped ? [...files].reverse() : [...files];
-  const board = game.board();
-
-  ranks.forEach(rank => {
-    cols.forEach(file => {
-      const squareName = file + rank;
-      const row = 8 - rank;
-      const col = files.indexOf(file);
-      const piece = board[row][col];
-
-      const sq = document.createElement("button");
-      sq.className = "square " + ((rank + col) % 2 === 0 ? "light" : "dark");
-      sq.setAttribute("aria-label", squareName);
-
-      if (selected === squareName) sq.classList.add("selected");
-      if (legalTargets.includes(squareName)) sq.classList.add("target");
-
-      if (lastMove && (lastMove.from === squareName || lastMove.to === squareName)) {
-        sq.classList.add("last");
-      }
-
-      if (file === cols[0]) {
-        const coord = document.createElement("span");
-        coord.className = "coordinates";
-        coord.textContent = rank;
-        sq.appendChild(coord);
-      }
-
-      if (rank === ranks[ranks.length - 1]) {
-        const coord = document.createElement("span");
-        coord.className = "coordinates";
-        coord.style.top = "auto";
-        coord.style.left = "auto";
-        coord.style.bottom = "2px";
-        coord.style.right = "3px";
-        coord.textContent = file;
-        sq.appendChild(coord);
-      }
-
-      if (piece) {
-        const p = document.createElement("span");
-        p.className = "piece " + (piece.color === "w" ? "white" : "black");
-        p.textContent = pieceSymbols[piece.color + piece.type];
-        sq.appendChild(p);
-      }
-
-      sq.onclick = () => clickSquare(squareName);
-      boardEl.appendChild(sq);
-    });
+function makeMove(from,to){
+  const c=chessAt(current), m=c.move({from,to,promotion:"q"});
+  if(!m)return;
+  let child=current.children.find(x=>x.uci===m.from+m.to+(m.promotion||""));
+  if(!child){
+    child={id:uid(),parent:current,move:{from:m.from,to:m.to,promotion:m.promotion},san:m.san,uci:m.from+m.to+(m.promotion||""),children:[]};
+    current.children.push(child);
+  }
+  current=child;renderBoard();
+}
+function renderMoves(){
+  const box=document.getElementById("moves");box.innerHTML="";
+  const path=currentPath(current);
+  if(!path.length){box.textContent="No moves yet.";return}
+  path.forEach((n,i)=>{
+    const b=document.createElement("button");b.className="move"+(n===current?" current":"");
+    b.innerHTML=(i%2===0?`<span class="num">${Math.floor(i/2)+1}.</span>`:"")+n.san;
+    b.onclick=()=>{current=n;renderBoard()};box.appendChild(b);
   });
 }
-
-function clickSquare(square) {
-  const piece = game.get(square);
-
-  if (selected === square) {
-    selected = null;
-    legalTargets = [];
-    renderBoard();
-    return;
-  }
-
-  if (selected && legalTargets.includes(square)) {
-    const before = getHistory();
-    const move = game.move({
-      from: selected,
-      to: square,
-      promotion: "q"
-    });
-
-    if (move) {
-      selected = null;
-      legalTargets = [];
-      historyAt = getHistory().length;
-      lastMove = {from: move.from, to: move.to};
-      render();
-      return;
-    }
-
-    // Restore the original position if the move wasn't accepted.
-    rebuildTo(before.length);
-    return;
-  }
-
-  if (piece && piece.color === game.turn()) {
-    selected = square;
-    legalTargets = game.moves({ square, verbose: true }).map(m => m.to);
-  } else {
-    selected = null;
-    legalTargets = [];
-  }
-
+function renderVariations(){
+  const box=document.getElementById("variations");box.innerHTML="";
+  if(!current.children.length){box.innerHTML='<span class="help">No branches yet. Make a legal move to create one.</span>';return}
+  current.children.forEach((n,i)=>{
+    const row=document.createElement("div");row.className="var";
+    const left=document.createElement("div");left.innerHTML=`<strong>${n.san}</strong><br><span>${n.children.length} continuation${n.children.length===1?"":"s"}</span>`;
+    const b=document.createElement("button");b.textContent="Open";b.onclick=()=>{current=n;renderBoard()};
+    row.append(left,b);box.appendChild(row);
+  });
+}
+function rootClone(){return JSON.parse(JSON.stringify({id:tree.id,move:tree.move,san:tree.san,uci:tree.uci,children:tree.children}))}
+function saveCurrent(){
+  const name=document.getElementById("lineName").value.trim()||"Unnamed line";
+  const data={id:uid(),name,tree:rootClone(),created:new Date().toISOString()};
+  saved=saved.filter(x=>x.name!==name);saved.unshift(data);localStorage.setItem(dbKey,JSON.stringify(saved));renderSaved();toast("Line saved");
+}
+function renderSaved(){
+  const box=document.getElementById("saved");box.innerHTML="";
+  if(!saved.length){box.innerHTML='<span class="help">No saved lines yet.</span>';return}
+  saved.forEach(s=>{
+    const row=document.createElement("div");row.className="var";
+    const left=document.createElement("div");left.innerHTML=`<strong>${escapeHtml(s.name)}</strong><br><span>${countNodes(s.tree)} move nodes</span>`;
+    const open=document.createElement("button");open.textContent="Load";open.onclick=()=>loadSaved(s);
+    const del=document.createElement("button");del.className="danger";del.textContent="×";del.onclick=()=>{saved=saved.filter(x=>x.id!==s.id);localStorage.setItem(dbKey,JSON.stringify(saved));renderSaved()};
+    const actions=document.createElement("div");actions.className="row";actions.append(open,del);row.append(left,actions);box.appendChild(row);
+  });
+}
+function countNodes(n){return (n.children||[]).reduce((a,x)=>a+1+countNodes(x),0)}
+function loadSaved(s){
+  tree=s.tree;annotateParents(tree);current=tree;document.getElementById("lineName").value=s.name;training=null;renderBoard();toast("Line loaded");
+}
+function escapeHtml(x){return x.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function pgn(){
+  const sans=sanList(current), out=[];for(let i=0;i<sans.length;i++){if(i%2===0)out.push((i/2+1)+".");out.push(sans[i])}return out.join(" ");
+}
+async function copyPGN(){try{await navigator.clipboard.writeText(pgn());toast("PGN copied")}catch{toast("Clipboard unavailable")}}
+function exportBackup(){
+  const blob=new Blob([JSON.stringify({version:2,saved},null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="opening-reps-backup.json";a.click();URL.revokeObjectURL(a.href)
+}
+function importBackup(){document.getElementById("importFile").click()}
+document.getElementById("importFile").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);saved=x.saved||[];localStorage.setItem(dbKey,JSON.stringify(saved));renderSaved();toast("Backup imported")}catch{toast("Invalid backup")}};r.readAsText(f)
+}
+function newLine(){tree={id:"root",move:null,san:null,uci:null,children:[]};current=tree;selected=null;training=null;document.getElementById("lineName").value="";renderBoard()}
+function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display="none",1800)}
+function startTraining(){
+  const root=tree; const path=currentPath(current);
+  if(!path.length){toast("Build or load a line first");return}
+  training={mode:document.getElementById("mode").value,root,currentNode:root,expectedIndex:0,errors:0};
+  current=root;selected=null;document.getElementById("trainInfo").textContent=training.mode==="learning"?"Learning: mistakes are corrected and you can retry.":"Strict: the answer is not shown immediately.";
   renderBoard();
 }
-
-function renderMoves() {
-  const el = document.getElementById("moves");
-  const hist = getHistory();
-
-  if (!hist.length) {
-    el.textContent = "No moves yet.";
-    return;
+function trainingTap(sq){
+  const c=chessAt(current), p=c.get(sq);
+  if(!training){return}
+  if(selected){
+    const m=c.moves({square:selected,verbose:true}).find(x=>x.to===sq);
+    if(m){const expected=expectedChild();if(expected&&m.from===expected.move.from&&m.to===expected.move.to){
+      current=expected;training.expectedIndex++;selected=null;renderBoard();checkTrainEnd();return;
+    }else{training.errors++;selected=null;renderBoard();if(training.mode==="learning"){toast("Not the memorised move — try again")}else toast("Incorrect");return}}
   }
-
-  el.innerHTML = "";
-
-  hist.forEach((m, i) => {
-    if (i % 2 === 0) {
-      const num = document.createElement("span");
-      num.className = "move-number";
-      num.textContent = (Math.floor(i / 2) + 1) + ".";
-      el.appendChild(num);
-    }
-
-    const btn = document.createElement("button");
-    btn.className = "move-button" + (i + 1 === historyAt ? " active" : "");
-    btn.textContent = m.san;
-    btn.title = "Jump to this move";
-    btn.onclick = () => rebuildTo(i + 1);
-    el.appendChild(btn);
-  });
-
-  if (historyAt < hist.length) {
-    const note = document.createElement("div");
-    note.style.color = "var(--muted)";
-    note.style.marginTop = "7px";
-    note.textContent = "You're viewing an earlier position. Make a move to explore a variation.";
-    el.appendChild(note);
-  }
+  selected=p&&p.color===c.turn()?sq:null;renderBoard()
 }
-
-function renderStatus() {
-  const el = document.getElementById("status");
-
-  if (game.isCheckmate()) {
-    el.innerHTML = "Checkmate! <small>Reset the board to start another line.</small>";
-  } else if (game.isCheck()) {
-    el.innerHTML = (game.turn() === "w" ? "White" : "Black") + " is in check." +
-      "<small>" + (game.turn() === "w" ? "White" : "Black") + " to move.</small>";
-  } else if (game.isDraw()) {
-    el.innerHTML = "Draw position. <small>You can still save this line.</small>";
-  } else {
-    el.innerHTML = (game.turn() === "w" ? "White" : "Black") + " to move." +
-      "<small>Tap a piece, then tap a highlighted destination square.</small>";
-  }
+function expectedChild(){return training&&training.currentNode.children[0]||null}
+function checkTrainEnd(){
+  const n=training.currentNode=current;
+  if(!n.children.length){document.getElementById("trainInfo").textContent=`Complete. Mistakes: ${training.errors}`;toast("Line complete ✓");training=null}
 }
-
-function renderPositionInfo() {
-  const fen = game.fen();
-  document.getElementById("positionInfo").textContent =
-    "Position: " + (historyAt + 1) + " ply · " +
-    (game.turn() === "w" ? "White to move" : "Black to move") +
-    ". You can save this line at any time.";
-}
-
-function stepBack() {
-  const hist = getHistory();
-  if (historyAt > 0) rebuildTo(historyAt - 1);
-}
-
-function stepForward() {
-  const hist = getHistory();
-  if (historyAt < hist.length) rebuildTo(historyAt + 1);
-}
-
-function resetBoard() {
-  game.reset();
-  historyAt = 0;
-  selected = null;
-  legalTargets = [];
-  lastMove = null;
-  render();
-}
-
-function flipBoard() {
-  flipped = !flipped;
-  renderBoard();
-}
-
-function saveLine() {
-  const hist = getHistory();
-  if (!hist.length) {
-    alert("Play at least one move before saving a line.");
-    return;
-  }
-
-  const nameInput = document.getElementById("lineName");
-  const name = nameInput.value.trim() || "My opening line";
-  const colour = document.getElementById("playerColour").value;
-
-  let lines = readLines();
-
-  lines.push({
-    id: Date.now().toString() + Math.random().toString(16).slice(2),
-    name,
-    colour,
-    pgn: game.pgn(),
-    moves: hist.map(m => ({from:m.from,to:m.to,promotion:m.promotion || "q"})),
-    created: new Date().toISOString()
-  });
-
-  try {
-    localStorage.setItem("openingRepsLines", JSON.stringify(lines));
-  } catch (e) {
-    alert("Couldn't save the line in this browser. Try exporting your backup.");
-    return;
-  }
-
-  currentLineName = name;
-  renderSavedLines();
-  alert("Line saved: " + name);
-}
-
-function readLines() {
-  try {
-    return JSON.parse(localStorage.getItem("openingRepsLines") || "[]");
-  } catch (e) {
-    return [];
-  }
-}
-
-function renderSavedLines() {
-  const lines = readLines();
-  const el = document.getElementById("savedLines");
-  document.getElementById("lineCount").textContent = "(" + lines.length + ")";
-  el.innerHTML = "";
-
-  if (!lines.length) {
-    el.innerHTML = '<p class="empty">Your saved lines will appear here.</p>';
-    return;
-  }
-
-  lines.forEach(line => {
-    const wrap = document.createElement("div");
-    const load = document.createElement("button");
-    load.className = "line-item";
-    load.innerHTML = "";
-
-    const title = document.createElement("strong");
-    title.textContent = line.name;
-
-    const details = document.createElement("small");
-    details.textContent = (line.colour === "w" ? "You play White" : "You play Black") +
-      " · " + line.moves.length + " half-moves";
-
-    load.appendChild(title);
-    load.appendChild(details);
-    load.onclick = () => loadLine(line.id);
-
-    const del = document.createElement("button");
-    del.textContent = "Delete";
-    del.style.marginTop = "5px";
-    del.onclick = () => deleteLine(line.id);
-
-    wrap.appendChild(load);
-    wrap.appendChild(del);
-    el.appendChild(wrap);
-  });
-}
-
-function loadLine(id) {
-  const line = readLines().find(l => l.id === id);
-  if (!line) return;
-
-  game.reset();
-  for (const m of line.moves) {
-    const result = game.move({
-      from: m.from,
-      to: m.to,
-      promotion: m.promotion || "q"
-    });
-    if (!result) {
-      alert("This saved line could not be loaded.");
-      resetBoard();
-      return;
-    }
-  }
-
-  historyAt = getHistory().length;
-  currentLineName = line.name;
-  document.getElementById("lineName").value = line.name + " — variation";
-  document.getElementById("playerColour").value = line.colour;
-  const hist = getHistory();
-  lastMove = hist.length ? {from:hist[hist.length-1].from,to:hist[hist.length-1].to} : null;
-  render();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function deleteLine(id) {
-  if (!confirm("Delete this saved line?")) return;
-  const lines = readLines().filter(l => l.id !== id);
-  localStorage.setItem("openingRepsLines", JSON.stringify(lines));
-  renderSavedLines();
-}
-
-function loadExample() {
-  game.reset();
-
-  const moves = [
-    ["e2","e4"], ["e7","e5"],
-    ["g1","f3"], ["b8","c6"],
-    ["f1","c4"], ["f8","c5"]
-  ];
-
-  for (const m of moves) {
-    game.move({from:m[0],to:m[1]});
-  }
-
-  historyAt = getHistory().length;
-  lastMove = {from:"f8",to:"c5"};
-  document.getElementById("lineName").value = "Italian Game — Giuoco Piano";
-  document.getElementById("sectionLabel").textContent = "LINE BUILDER";
-  document.getElementById("openingTitle").textContent = "Italian Game — Giuoco Piano";
-  render();
-}
-
-function copyPGN() {
-  const pgn = game.pgn();
-  if (!pgn) {
-    alert("Play some moves first.");
-    return;
-  }
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(pgn)
-      .then(() => alert("PGN copied:\n\n" + pgn))
-      .catch(() => prompt("Copy your PGN:", pgn));
-  } else {
-    prompt("Copy your PGN:", pgn);
-  }
-}
-
-function exportBackup() {
-  const data = JSON.stringify({
-    app: "Opening Reps",
-    version: 1,
-    lines: readLines()
-  }, null, 2);
-
-  const blob = new Blob([data], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "opening-reps-backup.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importBackup() {
-  const input = document.getElementById("importFile");
-  const file = input.files[0];
-
-  if (!file) {
-    alert("Choose a backup JSON file first.");
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      if (!Array.isArray(data.lines)) throw new Error("Invalid backup");
-
-      const existing = readLines();
-      const merged = [...existing];
-
-      data.lines.forEach(line => {
-        if (!line.id || !Array.isArray(line.moves)) return;
-        merged.push({...line, id:Date.now().toString() + Math.random().toString(16).slice(2)});
-      });
-
-      localStorage.setItem("openingRepsLines", JSON.stringify(merged));
-      renderSavedLines();
-      alert("Backup imported successfully.");
-    } catch (e) {
-      alert("That file doesn't look like a valid Opening Reps backup.");
-    }
-  };
-
-  reader.readAsText(file);
-}
-
-function showSection(section, button) {
-  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-  button.classList.add("active");
-
-  const labels = {
-    train: ["YOUR TRAINING BOARD", "Choose a line to practise"],
-    build: ["LINE BUILDER", "Build your own opening line"],
-    repertoire: ["YOUR REPERTOIRE", "Your saved opening lines"]
-  };
-
-  document.getElementById("sectionLabel").textContent = labels[section][0];
-  document.getElementById("openingTitle").textContent = labels[section][1];
-
-  if (section === "repertoire") {
-    document.getElementById("savedLines").scrollIntoView({behavior:"smooth",block:"center"});
-  } else {
-    document.getElementById("board").scrollIntoView({behavior:"smooth",block:"start"});
-  }
-}
-
-render();
-renderSavedLines();
+document.getElementById("back").onclick=()=>{if(current.parent){current=current.parent;selected=null;renderBoard()}}
+document.getElementById("forward").onclick=()=>{if(current.children[0]){current=current.children[0];selected=null;renderBoard()}}
+document.getElementById("start").onclick=()=>{current=tree;selected=null;renderBoard()}
+document.getElementById("flip").onclick=()=>{orientation=orientation==="w"?"b":"w";renderBoard()}
+document.getElementById("newBtn").onclick=newLine
+document.getElementById("saveLine").onclick=saveCurrent
+document.getElementById("copyPgn").onclick=copyPGN
+document.getElementById("exportBtn").onclick=exportBackup
+document.getElementById("importBtn").onclick=importBackup
+document.getElementById("practice").onclick=()=>{document.getElementById("trainTab").click();startTraining()}
+document.getElementById("restartTrain").onclick=startTraining
+document.getElementById("buildTab").onclick=()=>{buildTab.classList.add("active");trainTab.classList.remove("active");buildPanel.classList.remove("hidden");trainPanel.classList.add("hidden");training=null;renderBoard()}
+document.getElementById("trainTab").onclick=()=>{trainTab.classList.add("active");buildTab.classList.remove("active");trainPanel.classList.remove("hidden");buildPanel.classList.add("hidden");training=null;renderBoard()}
+newLine();renderSaved();
 </script>
-
 </body>
-  </html>
+</html>
