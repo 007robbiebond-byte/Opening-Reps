@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171b19">
+<title>Opening Reps | Chess Trainer</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+<style>
+:root {
+  --bg: #141815;
+  --panel: #202622;
+  --panel2: #29312b;
+  --border: #374139;
+  --text: #edf1eb;
+  --muted: #a3afa4;
+  --green: #80b58e;
+  --green-dark: #315b3d;
+  --cream: #f0e5cc;
+  --sage: #8ca98b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+button, input, select { font: inherit; }
+
+button {
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+button:active { transform: scale(.98); }
+
+button.primary {
+  background: var(--green-dark);
+  border-color: #507a59;
+}
+
+button:hover { border-color: var(--green); }
+
+input, select {
+  width: 100%;
+  padding: 11px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: #151a16;
+  color: var(--text);
+}
+
+header {
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.logo {
+  font-size: 29px;
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  background: var(--green-dark);
+  border-radius: 12px;
+}
+
+h1 { font-size: 20px; margin: 0; }
+
+.subtitle {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+nav {
+  display: flex;
+  gap: 5px;
+}
+
+nav button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+nav button.active {
+  color: var(--green);
+  background: var(--panel);
+}
+
+main {
+  max-width: 1250px;
+  margin: auto;
+  padding: 20px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 20px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--green);
+  font-weight: 750;
+}
+
+h2 { font-size: 16px; margin: 5px 0 12px; }
+
+.status {
+  background: var(--panel2);
+  padding: 12px;
+  border-radius: 9px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.status small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 100%;
+  max-width: 610px;
+  aspect-ratio: 1;
+  margin: auto;
+  border: 4px solid #252c27;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 12px 35px #0005;
+}
+
+.square {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  color: inherit;
+}
+
+.light { background: var(--cream); }
+.dark { background: var(--sage); }
+
+.square.selected {
+  box-shadow: inset 0 0 0 4px #e2c85c;
+}
+
+.square.last {
+  background-image: linear-gradient(#e9d65c66, #e9d65c66);
+}
+
+.square.target::after {
+  content: "";
+  position: absolute;
+  width: 25%;
+  aspect-ratio: 1;
+  background: #253e2b80;
+  border-radius: 50%;
+}
+
+.square .piece {
+  font-family: "DejaVu Sans", "Arial Unicode MS", serif;
+  font-size: clamp(26px, 7vw, 62px);
+  line-height: 1;
+  z-index: 1;
+  user-select: none;
+}
+
+.piece.white {
+  color: #fffaf0;
+  text-shadow:
+    -1px -1px 1px #333,
+    1px -1px 1px #333,
+    -1px 1px 1px #333,
+    1px 1px 1px #333,
+    0 2px 2px #555;
+}
+
+.piece.black {
+  color: #20251f;
+  text-shadow: 0 1px 1px #ffffff55;
+}
+
+.coordinates {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.light .coordinates { color: #68836a; }
+.dark .coordinates { color: #f8efd9; }
+
+.board-controls {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.board-controls button { flex: 1; }
+
+.moves {
+  background: #151a16;
+  border-radius: 9px;
+  padding: 10px;
+  margin-top: 12px;
+  min-height: 48px;
+  font-size: 13px;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+
+.move-button {
+  display: inline-block;
+  padding: 2px 5px;
+  margin: 1px;
+  border: 0;
+  background: transparent;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+.move-button.active {
+  background: var(--green-dark);
+}
+
+.field { margin: 12px 0; }
+
+.field label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.full { width: 100%; }
+
+.line-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 7px;
+  overflow-wrap: anywhere;
+}
+
+.line-item small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 15px 0;
+}
+
+footer {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  padding: 12px;
+}
+
+@media (min-width: 850px) {
+  .board-area { padding: 5px 12px; }
+}
+
+@media (max-width: 760px) {
+  header { padding: 13px; flex-wrap: wrap; }
+  nav { width: 100%; }
+  nav button { flex: 1; padding: 8px 4px; }
+  main { padding: 12px; }
+  .layout { grid-template-columns: 1fr; gap: 4px; }
+  .board-area { padding: 0; }
+  .board { max-width: 540px; }
+  .right-column { display: grid; grid-template-columns: 1fr; }
+  .square .piece { font-size: clamp(27px, 10vw, 56px); }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">♞</div>
+    <div>
+      <h1>Opening Reps</h1>
+      <div class="subtitle">Your repertoire. Your moves. Your preparation.</div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="active" onclick="showSection('train',this)">Train</button>
+    <button onclick="showSection('build',this)">Line Builder</button>
+    <button onclick="showSection('repertoire',this)">My Lines</button>
+  </nav>
+</header>
+
+<main>
+  <div class="layout">
+
+    <section class="board-area">
+      <div class="panel">
+        <div class="eyebrow" id="sectionLabel">YOUR TRAINING BOARD</div>
+        <h2 id="openingTitle">Build your opening repertoire</h2>
+
+        <div class="status" id="status">
+          Make a move on the board to get started.
+          <small>Tap a piece, then tap its destination.</small>
+        </div>
+
+        <div class="board" id="board" aria-label="Chessboard"></div>
+
+        <div class="board-controls">
+          <button onclick="stepBack()">← Back</button>
+          <button onclick="stepForward()">Forward →</button>
+          <button onclick="flipBoard()">⇅ Flip</button>
+          <button onclick="resetBoard()">↺ Reset</button>
+        </div>
+
+        <div class="moves" id="moves">No moves yet.</div>
+      </div>
+
+      <div class="panel">
+        <div class="eyebrow">CURRENT POSITION</div>
+        <h2>Move information</h2>
+        <div class="empty" id="positionInfo">
+          Play moves to create your line. Select a move above to jump back to that position.
+        </div>
+        <div class="divider"></div>
+        <button class="full" onclick="copyPGN()">Copy PGN</button>
+        <p class="empty">PGN lets you move your lines between compatible chess tools.</p>
+      </div>
+    </section>
+
+    <aside class="right-column">
+
+      <div class="panel" id="builderPanel">
+        <div class="eyebrow">LINE BUILDER</div>
+        <h2>Save your line</h2>
+        <p class="empty">
+          Play the moves on the board, then save the sequence. To create a sideline, load a saved line, go back to the branching position, and play a different move. Save it with a different name.
+        </p>
+
+        <div class="field">
+          <label for="lineName">Opening / variation name</label>
+          <input id="lineName" placeholder="e.g. Italian — 3...Be7">
+        </div>
+
+        <div class="field">
+          <label for="playerColour">Moves you want to memorise</label>
+          <select id="playerColour">
+            <option value="w">I play White</option>
+            <option value="b">I play Black</option>
+          </select>
+        </div>
+
+        <button class="primary full" onclick="saveLine()">＋ Save current line</button>
+
+        <div class="divider"></div>
+
+        <div class="eyebrow">QUICK START</div>
+        <h2>Try a position</h2>
+        <button class="full" onclick="loadExample()">Load Italian Game example</button>
+        <p class="empty">Loads 1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5.</p>
+      </div>
+
+      <div class="panel">
+        <div class="eyebrow">MY REPERTOIRE</div>
+        <h2>Saved lines <span id="lineCount">(0)</span></h2>
+        <div id="savedLines">
+          <p class="empty">Your saved lines will appear here.</p>
+        </div>
+        <div class="divider"></div>
+        <button class="full" onclick="exportBackup()">Export repertoire backup</button>
+        <div class="field">
+          <label for="importFile">Restore a backup</label>
+          <input type="file" id="importFile" accept=".json,application/json">
+        </div>
+        <button class="full" onclick="importBackup()">Import backup</button>
+      </div>
+
+    </aside>
+  </div>
+
+  <footer>
+    Opening Reps · Personal chess training · Your repertoire is stored in this browser
+  </footer>
+</main>
+
+<script>
+const files = "abcdefgh";
+const pieceSymbols = {
+  wk:"♔", wq:"♕", wr:"♖", wb:"♗", wn:"♘", wp:"♙",
+  bk:"♚", bq:"♛", br:"♜", bb:"♝", bn:"♞", bp:"♟"
+};
+
+let game = new Chess();
+let flipped = false;
+let selected = null;
+let legalTargets = [];
+let historyAt = 0;
+let historyMoves = [];
+let lastMove = null;
+let currentLineName = "";
+let currentColour = "w";
+
+function getHistory() {
+  return game.history({ verbose: true });
+}
+
+function rebuildTo(ply) {
+  const oldHistory = getHistory();
+  game.reset();
+
+  for (let i = 0; i < Math.min(ply, oldHistory.length); i++) {
+    const m = oldHistory[i];
+    game.move({ from: m.from, to: m.to, promotion: m.promotion || "q" });
+  }
+
+  historyAt = Math.min(ply, oldHistory.length);
+  selected = null;
+  legalTargets = [];
+  render();
+}
+
+function render() {
+  renderBoard();
+  renderMoves();
+  renderStatus();
+  renderPositionInfo();
+}
+
+function renderBoard() {
+  const boardEl = document.getElementById("board");
+  boardEl.innerHTML = "";
+
+  const ranks = flipped ? [1,2,3,4,5,6,7,8] : [8,7,6,5,4,3,2,1];
+  const cols = flipped ? [...files].reverse() : [...files];
+  const board = game.board();
+
+  ranks.forEach(rank => {
+    cols.forEach(file => {
+      const squareName = file + rank;
+      const row = 8 - rank;
+      const col = files.indexOf(file);
+      const piece = board[row][col];
+
+      const sq = document.createElement("button");
+      sq.className = "square " + ((rank + col) % 2 === 0 ? "light" : "dark");
+      sq.setAttribute("aria-label", squareName);
+
+      if (selected === squareName) sq.classList.add("selected");
+      if (legalTargets.includes(squareName)) sq.classList.add("target");
+
+      if (lastMove && (lastMove.from === squareName || lastMove.to === squareName)) {
+        sq.classList.add("last");
+      }
+
+      if (file === cols[0]) {
+        const coord = document.createElement("span");
+        coord.className = "coordinates";
+        coord.textContent = rank;
+        sq.appendChild(coord);
+      }
+
+      if (rank === ranks[ranks.length - 1]) {
+        const coord = document.createElement("span");
+        coord.className = "coordinates";
+        coord.style.top = "auto";
+        coord.style.left = "auto";
+        coord.style.bottom = "2px";
+        coord.style.right = "3px";
+        coord.textContent = file;
+        sq.appendChild(coord);
+      }
+
+      if (piece) {
+        const p = document.createElement("span");
+        p.className = "piece " + (piece.color === "w" ? "white" : "black");
+        p.textContent = pieceSymbols[piece.color + piece.type];
+        sq.appendChild(p);
+      }
+
+      sq.onclick = () => clickSquare(squareName);
+      boardEl.appendChild(sq);
+    });
+  });
+}
+
+function clickSquare(square) {
+  const piece = game.get(square);
+
+  if (selected === square) {
+    selected = null;
+    legalTargets = [];
+    renderBoard();
+    return;
+  }
+
+  if (selected && legalTargets.includes(square)) {
+    const before = getHistory();
+    const move = game.move({
+      from: selected,
+      to: square,
+      promotion: "q"
+    });
+
+    if (move) {
+      selected = null;
+      legalTargets = [];
+      historyAt = getHistory().length;
+      lastMove = {from: move.from, to: move.to};
+      render();
+      return;
+    }
+
+    // Restore the original position if the move wasn't accepted.
+    rebuildTo(before.length);
+    return;
+  }
+
+  if (piece && piece.color === game.turn()) {
+    selected = square;
+    legalTargets = game.moves({ square, verbose: true }).map(m => m.to);
+  } else {
+    selected = null;
+    legalTargets = [];
+  }
+
+  renderBoard();
+}
+
+function renderMoves() {
+  const el = document.getElementById("moves");
+  const hist = getHistory();
+
+  if (!hist.length) {
+    el.textContent = "No moves yet.";
+    return;
+  }
+
+  el.innerHTML = "";
+
+  hist.forEach((m, i) => {
+    if (i % 2 === 0) {
+      const num = document.createElement("span");
+      num.className = "move-number";
+      num.textContent = (Math.floor(i / 2) + 1) + ".";
+      el.appendChild(num);
+    }
+
+    const btn = document.createElement("button");
+    btn.className = "move-button" + (i + 1 === historyAt ? " active" : "");
+    btn.textContent = m.san;
+    btn.title = "Jump to this move";
+    btn.onclick = () => rebuildTo(i + 1);
+    el.appendChild(btn);
+  });
+
+  if (historyAt < hist.length) {
+    const note = document.createElement("div");
+    note.style.color = "var(--muted)";
+    note.style.marginTop = "7px";
+    note.textContent = "You're viewing an earlier position. Make a move to explore a variation.";
+    el.appendChild(note);
+  }
+}
+
+function renderStatus() {
+  const el = document.getElementById("status");
+
+  if (game.isCheckmate()) {
+    el.innerHTML = "Checkmate! <small>Reset the board to start another line.</small>";
+  } else if (game.isCheck()) {
+    el.innerHTML = (game.turn() === "w" ? "White" : "Black") + " is in check." +
+      "<small>" + (game.turn() === "w" ? "White" : "Black") + " to move.</small>";
+  } else if (game.isDraw()) {
+    el.innerHTML = "Draw position. <small>You can still save this line.</small>";
+  } else {
+    el.innerHTML = (game.turn() === "w" ? "White" : "Black") + " to move." +
+      "<small>Tap a piece, then tap a highlighted destination square.</small>";
+  }
+}
+
+function renderPositionInfo() {
+  const fen = game.fen();
+  document.getElementById("positionInfo").textContent =
+    "Position: " + (historyAt + 1) + " ply · " +
+    (game.turn() === "w" ? "White to move" : "Black to move") +
+    ". You can save this line at any time.";
+}
+
+function stepBack() {
+  const hist = getHistory();
+  if (historyAt > 0) rebuildTo(historyAt - 1);
+}
+
+function stepForward() {
+  const hist = getHistory();
+  if (historyAt < hist.length) rebuildTo(historyAt + 1);
+}
+
+function resetBoard() {
+  game.reset();
+  historyAt = 0;
+  selected = null;
+  legalTargets = [];
+  lastMove = null;
+  render();
+}
+
+function flipBoard() {
+  flipped = !flipped;
+  renderBoard();
+}
+
+function saveLine() {
+  const hist = getHistory();
+  if (!hist.length) {
+    alert("Play at least one move before saving a line.");
+    return;
+  }
+
+  const nameInput = document.getElementById("lineName");
+  const name = nameInput.value.trim() || "My opening line";
+  const colour = document.getElementById("playerColour").value;
+
+  let lines = readLines();
+
+  lines.push({
+    id: Date.now().toString() + Math.random().toString(16).slice(2),
+    name,
+    colour,
+    pgn: game.pgn(),
+    moves: hist.map(m => ({from:m.from,to:m.to,promotion:m.promotion || "q"})),
+    created: new Date().toISOString()
+  });
+
+  try {
+    localStorage.setItem("openingRepsLines", JSON.stringify(lines));
+  } catch (e) {
+    alert("Couldn't save the line in this browser. Try exporting your backup.");
+    return;
+  }
+
+  currentLineName = name;
+  renderSavedLines();
+  alert("Line saved: " + name);
+}
+
+function readLines() {
+  try {
+    return JSON.parse(localStorage.getItem("openingRepsLines") || "[]");
+  } catch (e) {
+    return [];
+  }
+}
+
+function renderSavedLines() {
+  const lines = readLines();
+  const el = document.getElementById("savedLines");
+  document.getElementById("lineCount").textContent = "(" + lines.length + ")";
+  el.innerHTML = "";
+
+  if (!lines.length) {
+    el.innerHTML = '<p class="empty">Your saved lines will appear here.</p>';
+    return;
+  }
+
+  lines.forEach(line => {
+    const wrap = document.createElement("div");
+    const load = document.createElement("button");
+    load.className = "line-item";
+    load.innerHTML = "";
+
+    const title = document.createElement("strong");
+    title.textContent = line.name;
+
+    const details = document.createElement("small");
+    details.textContent = (line.colour === "w" ? "You play White" : "You play Black") +
+      " · " + line.moves.length + " half-moves";
+
+    load.appendChild(title);
+    load.appendChild(details);
+    load.onclick = () => loadLine(line.id);
+
+    const del = document.createElement("button");
+    del.textContent = "Delete";
+    del.style.marginTop = "5px";
+    del.onclick = () => deleteLine(line.id);
+
+    wrap.appendChild(load);
+    wrap.appendChild(del);
+    el.appendChild(wrap);
+  });
+}
+
+function loadLine(id) {
+  const line = readLines().find(l => l.id === id);
+  if (!line) return;
+
+  game.reset();
+  for (const m of line.moves) {
+    const result = game.move({
+      from: m.from,
+      to: m.to,
+      promotion: m.promotion || "q"
+    });
+    if (!result) {
+      alert("This saved line could not be loaded.");
+      resetBoard();
+      return;
+    }
+  }
+
+  historyAt = getHistory().length;
+  currentLineName = line.name;
+  document.getElementById("lineName").value = line.name + " — variation";
+  document.getElementById("playerColour").value = line.colour;
+  const hist = getHistory();
+  lastMove = hist.length ? {from:hist[hist.length-1].from,to:hist[hist.length-1].to} : null;
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function deleteLine(id) {
+  if (!confirm("Delete this saved line?")) return;
+  const lines = readLines().filter(l => l.id !== id);
+  localStorage.setItem("openingRepsLines", JSON.stringify(lines));
+  renderSavedLines();
+}
+
+function loadExample() {
+  game.reset();
+
+  const moves = [
+    ["e2","e4"], ["e7","e5"],
+    ["g1","f3"], ["b8","c6"],
+    ["f1","c4"], ["f8","c5"]
+  ];
+
+  for (const m of moves) {
+    game.move({from:m[0],to:m[1]});
+  }
+
+  historyAt = getHistory().length;
+  lastMove = {from:"f8",to:"c5"};
+  document.getElementById("lineName").value = "Italian Game — Giuoco Piano";
+  document.getElementById("sectionLabel").textContent = "LINE BUILDER";
+  document.getElementById("openingTitle").textContent = "Italian Game — Giuoco Piano";
+  render();
+}
+
+function copyPGN() {
+  const pgn = game.pgn();
+  if (!pgn) {
+    alert("Play some moves first.");
+    return;
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(pgn)
+      .then(() => alert("PGN copied:\n\n" + pgn))
+      .catch(() => prompt("Copy your PGN:", pgn));
+  } else {
+    prompt("Copy your PGN:", pgn);
+  }
+}
+
+function exportBackup() {
+  const data = JSON.stringify({
+    app: "Opening Reps",
+    version: 1,
+    lines: readLines()
+  }, null, 2);
+
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "opening-reps-backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importBackup() {
+  const input = document.getElementById("importFile");
+  const file = input.files[0];
+
+  if (!file) {
+    alert("Choose a backup JSON file first.");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!Array.isArray(data.lines)) throw new Error("Invalid backup");
+
+      const existing = readLines();
+      const merged = [...existing];
+
+      data.lines.forEach(line => {
+        if (!line.id || !Array.isArray(line.moves)) return;
+        merged.push({...line, id:Date.now().toString() + Math.random().toString(16).slice(2)});
+      });
+
+      localStorage.setItem("openingRepsLines", JSON.stringify(merged));
+      renderSavedLines();
+      alert("Backup imported successfully.");
+    } catch (e) {
+      alert("That file doesn't look like a valid Opening Reps backup.");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+function showSection(section, button) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+  button.classList.add("active");
+
+  const labels = {
+    train: ["YOUR TRAINING BOARD", "Choose a line to practise"],
+    build: ["LINE BUILDER", "Build your own opening line"],
+    repertoire: ["YOUR REPERTOIRE", "Your saved opening lines"]
+  };
+
+  document.getElementById("sectionLabel").textContent = labels[section][0];
+  document.getElementById("openingTitle").textContent = labels[section][1];
+
+  if (section === "repertoire") {
+    document.getElementById("savedLines").scrollIntoView({behavior:"smooth",block:"center"});
+  } else {
+    document.getElementById("board").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+render();
+renderSavedLines();
+</script>
+
+</body>
+  </html>
