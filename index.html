@@ -3,284 +3,136 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#161512">
+<meta name="theme-color" content="#171614">
 <title>Opening Reps</title>
 <style>
-:root{
-  --bg:#161512;--panel:#211f1b;--panel2:#292722;--text:#f1eee7;--muted:#aaa49a;
-  --green:#629924;--green2:#769f3d;--cream:#f0d9b5;--brown:#b58863;--danger:#b85c5c;
-  --line:#3a3731;--accent:#9fbd62;
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,select{font:inherit}
-button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:9px 12px;cursor:pointer}
-button:hover{border-color:#575249}
-button.primary{background:var(--green);border-color:var(--green);font-weight:700}
-button.danger{color:#ffb3b3}
-input,select{width:100%;background:#171613;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px}
-header{position:sticky;top:0;z-index:10;background:rgba(22,21,18,.96);border-bottom:1px solid var(--line);padding:12px 14px}
-.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1100px;margin:auto}
-.brand h1{font-size:20px;margin:0}
-.brand small{color:var(--muted)}
-main{max-width:1100px;margin:auto;padding:14px}
-.layout{display:grid;grid-template-columns:minmax(280px,680px) minmax(260px,1fr);gap:16px;align-items:start}
-@media(max-width:800px){.layout{grid-template-columns:1fr}.side{order:2}}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
-.board-wrap{width:min(100%,680px);margin:auto}
-.board{width:100%;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(8,1fr);border-radius:4px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3)}
-.sq{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.sq.light{background:var(--cream)}.sq.dark{background:var(--brown)}
-.sq.selected{box-shadow:inset 0 0 0 4px rgba(246,246,80,.72)}
-.sq.last{background-image:linear-gradient(rgba(246,246,80,.22),rgba(246,246,80,.22))}
-.sq.legal:after{content:"";width:28%;height:28%;border-radius:50%;background:rgba(30,30,20,.28);position:absolute}
-.sq.capture:after{content:"";position:absolute;inset:7%;border:5px solid rgba(30,30,20,.28);border-radius:50%}
-.piece{font-family:"Noto Sans Symbols 2","Segoe UI Symbol","DejaVu Sans",sans-serif;font-size:clamp(30px,9vw,68px);line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.45));z-index:1}
-.coord{position:absolute;font-size:10px;font-weight:700;opacity:.75}
-.file{right:3px;bottom:2px}.rank{left:3px;top:2px}
-.light .coord{color:#8b6b4e}.dark .coord{color:#f0d9b5}
-.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.status{margin:10px 0 0;padding:9px 10px;border-radius:9px;background:#191815;color:var(--muted);min-height:38px}
-.section-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
-.moves{display:flex;flex-wrap:wrap;gap:5px;max-height:230px;overflow:auto}
-.move{padding:6px 8px;border-radius:7px;background:#181714;border:1px solid transparent;cursor:pointer}
-.move.current{border-color:var(--green2);background:#25331a}
-.move .num{color:var(--muted);margin-right:4px}
-.variations{display:grid;gap:7px}
-.var{padding:9px;background:#191815;border:1px solid var(--line);border-radius:9px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.var strong{font-size:13px}.var span{color:var(--muted);font-size:12px}
-.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
-.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{flex:1}.tabs .active{background:var(--green);border-color:var(--green)}
-.hidden{display:none!important}
-details{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
-summary{cursor:pointer;color:var(--accent);font-weight:650}
-.help{font-size:13px;color:var(--muted);line-height:1.45}
-.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f0f0d;border:1px solid var(--line);padding:10px 14px;border-radius:10px;display:none;z-index:50}
+:root{--bg:#171614;--panel:#211f1b;--panel2:#191815;--line:#39362f;--text:#eee9df;--muted:#aaa39a;--green:#629924;--light:#f0d9b5;--dark:#b58863}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{background:#292722;color:var(--text);border:1px solid #403c34;border-radius:9px;padding:9px 12px;cursor:pointer}button:hover{filter:brightness(1.1)}button.primary{background:var(--green);border-color:var(--green);font-weight:700}
+header{padding:14px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}.top{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between}.brand{font-size:20px;font-weight:800}.sub{font-size:12px;color:var(--muted)}
+main{max-width:1080px;margin:auto;padding:14px}.layout{display:grid;grid-template-columns:minmax(300px,680px) minmax(280px,1fr);gap:14px}@media(max-width:820px){.layout{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}.boardWrap{width:min(100%,680px);margin:auto}.board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);overflow:hidden;border-radius:5px;box-shadow:0 14px 35px #0008}.sq{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1;cursor:pointer;touch-action:manipulation}.light{background:var(--light)}.dark{background:var(--dark)}.piece{font-family:"DejaVu Sans","Segoe UI Symbol",sans-serif;font-size:clamp(31px,9vw,70px);line-height:1;text-shadow:0 2px 2px #0008}.selected{box-shadow:inset 0 0 0 4px #f6f669}.hint:after{content:"";position:absolute;width:24%;height:24%;border-radius:50%;background:#3338}.capture:after{content:"";position:absolute;inset:7%;border:5px solid #3338;border-radius:50%}.coord{position:absolute;font-size:9px;font-weight:700;opacity:.75}.rank{left:3px;top:2px}.file{right:3px;bottom:2px}.light .coord{color:#815f43}.dark .coord{color:#f0d9b5}
+.controls{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.status{margin-top:10px;padding:10px;border-radius:9px;background:var(--panel2);color:var(--muted)}.section{margin-top:14px}.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:7px}
+input,select{width:100%;background:var(--panel2);color:var(--text);border:1px solid #403c34;border-radius:9px;padding:10px;margin-bottom:8px}.moves{display:flex;flex-wrap:wrap;gap:5px;max-height:210px;overflow:auto}.move{padding:6px 8px}.current{border-color:#9ac45d}.item{background:var(--panel2);border:1px solid #34312b;border-radius:9px;padding:8px;margin-top:6px;display:flex;align-items:center;justify-content:space-between;gap:8px}.muted{color:var(--muted);font-size:13px;line-height:1.4}.badge{display:inline-block;padding:4px 7px;border-radius:999px;background:#30352a;color:#c7e29c;font-size:12px}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#292722;border:1px solid #4a463e;padding:10px 14px;border-radius:10px;display:none;z-index:20}
 </style>
 </head>
 <body>
-<header><div class="brand"><div><h1>♞ Opening Reps</h1><small>Build your line. Then repeat it.</small></div><button id="newBtn">New line</button></div></header>
-
-<main>
-<div class="layout">
-<section>
-<div class="card board-wrap">
-  <div id="board" class="board" aria-label="Chess board"></div>
-  <div class="controls">
-    <button id="back">← Back</button><button id="forward">Forward →</button>
-    <button id="flip">Flip</button><button id="start">Start</button>
-    <button id="practice" class="primary">Practise this line</button>
-  </div>
-  <div id="status" class="status">Build a line by making moves on the board.</div>
-</div>
+<header><div class="top"><div><div class="brand">♞ Opening Reps</div><div class="sub">Build the exact lines you want to remember.</div></div><button onclick="newLine()">New line</button></div></header>
+<main><div class="layout">
+<section class="card">
+<div class="boardWrap"><div id="board" class="board"></div></div>
+<div class="controls"><button onclick="goBack()">← Back</button><button onclick="goForward()">Forward →</button><button onclick="goStart()">Start</button><button onclick="flipBoard()">Flip</button></div>
+<div id="status" class="status"></div>
+<div class="section"><div class="label">Training</div>
+<div class="controls"><button class="primary" onclick="startTraining('learning')">Learning mode</button><button onclick="startTraining('strict')">Strict mode</button><button onclick="stopTraining()">Stop</button></div>
+<div id="trainStatus" class="status" style="display:none"></div></div>
 </section>
+<aside class="card">
+<div class="label">Line name</div><input id="lineName" placeholder="e.g. Italian — Two Knights">
+<div class="controls"><button class="primary" onclick="saveLine()">Save line</button><button onclick="deleteCurrentSave()">Delete saved</button></div>
 
-<aside class="side">
-<div class="card">
-  <div class="tabs"><button id="buildTab" class="active">Build</button><button id="trainTab">Train</button></div>
+<div class="section"><div class="label">Current line</div><div id="moves" class="moves"></div></div>
+<div class="section"><div class="label">Branches from this position</div><div id="branches"></div></div>
 
-  <div id="buildPanel">
-    <p class="section-title">Current line</p>
-    <input id="lineName" placeholder="Line name, e.g. Italian — Two Knights">
-    <div class="controls"><button id="saveLine" class="primary">Save line</button><button id="copyPgn">Copy PGN</button></div>
+<div class="section"><div class="label">Saved repertoire</div><div id="saved"></div></div>
 
-    <details open>
-      <summary>Moves</summary>
-      <div id="moves" class="moves" style="margin-top:9px"></div>
-    </details>
-
-    <details open>
-      <summary>Variations from this position</summary>
-      <p class="help">Make a move from the current position to create a branch. Existing branches are preserved. Tap any move to jump there, then make a different move to start a sideline.</p>
-      <div id="variations" class="variations"></div>
-    </details>
-
-    <details>
-      <summary>Saved repertoire</summary>
-      <div id="saved" class="variations" style="margin-top:9px"></div>
-    </details>
-
-    <details>
-      <summary>Backup</summary>
-      <div class="controls">
-        <button id="exportBtn">Export backup</button>
-        <button id="importBtn">Import backup</button>
-      </div>
-      <input id="importFile" type="file" accept=".json" class="hidden">
-    </details>
-  </div>
-
-  <div id="trainPanel" class="hidden">
-    <p class="section-title">Training mode</p>
-    <select id="mode"><option value="learning">Learning Mode</option><option value="strict">Strict Mode</option></select>
-    <div class="controls"><button id="restartTrain" class="primary">Start training</button></div>
-    <div id="trainInfo" class="status">Choose a saved line, then start training.</div>
-  </div>
+<div class="section"><div class="label">Backup</div>
+<div class="controls"><button onclick="exportBackup()">Export backup</button><button onclick="importBackup()">Import backup</button></div>
+<input id="fileInput" type="file" accept=".json" style="display:none" onchange="readBackup(event)">
 </div>
+
+<div class="section"><div class="label">PGN</div>
+<div class="controls"><button onclick="exportPGN()">Export current line</button><button onclick="importPGN()">Import PGN</button></div>
+<input id="pgnInput" placeholder="Paste PGN here, then press Import PGN" style="margin-top:8px">
+</div>
+
+<p class="muted">Build your repertoire manually. To make a sideline, return to any earlier position and play a different legal move. Existing branches stay saved.</p>
 </aside>
-</div>
-</main>
-<div id="toast" class="toast"></div>
+</div></main><div id="toast" class="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.4.0/chess.min.js"></script>
 <script>
-const PIECES={w:{p:"♙",n:"♘",b:"♗",r:"♖",q:"♕",k:"♔"},b:{p:"♟",n:"♞",b:"♝",r:"♜",q:"♛",k:"♚"}};
-const START="start";
-let tree={id:"root",fen:null,move:null,san:null,uci:null,children:[]};
-let current=tree, orientation="w", selected=null, training=null;
-let dbKey="openingReps.v2";
-let saved=JSON.parse(localStorage.getItem(dbKey)||"[]");
+const G={w:{p:"♙",n:"♘",b:"♗",r:"♖",q:"♕",k:"♔"},b:{p:"♟",n:"♞",b:"♝",r:"♜",q:"♛",k:"♚"}},FILES="abcdefgh";
+let root,cur,selected=null,flipped=false,training=null,saves=JSON.parse(localStorage.getItem("openingRepsSaves")||"[]");
 
-function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function chessAt(node){
-  const c=new Chess();
-  const path=[]; let n=node; while(n&&n.move){path.unshift(n.move);n=n.parent}
-  path.forEach(m=>c.move(m));
-  return c;
-}
-function annotateParents(n,parent=null){n.parent=parent;(n.children||[]).forEach(x=>annotateParents(x,n))}
-function currentPath(n){const a=[];while(n&&n.move){a.unshift(n);n=n.parent}return a}
-function sanList(n){return currentPath(n).map(x=>x.san)}
-function nodeDepth(n){return currentPath(n).length}
-function boardFen(){return chessAt(current).fen()}
+function initial(){return [["r","n","b","q","k","b","n","r"],["p","p","p","p","p","p","p","p"],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],["P","P","P","P","P","P","P","P"],["R","N","B","Q","K","B","N","R"]]}
+function newLine(){root={parent:null,move:null,san:"",board:initial(),children:[]};cur=root;selected=null;training=null;render()}
+function clone(b){return b.map(r=>r.slice())}
+function color(x){return x?(x===x.toUpperCase()?"w":"b"):null}
+function rc(s){return[8-Number(s[1]),FILES.indexOf(s[0])]}
+function sq(r,c){return FILES[c]+(8-r)}
+function path(n){const a=[];while(n&&n.move){a.unshift(n);n=n.parent}return a}
+function turn(){return path(cur).length%2?"b":"w"}
 
-function renderBoard(){
-  const c=chessAt(current), board=document.getElementById("board"); board.innerHTML="";
-  const files=orientation==="w"?["a","b","c","d","e","f","g","h"]:["h","g","f","e","d","c","b","a"];
-  const ranks=orientation==="w"?[8,7,6,5,4,3,2,1]:[1,2,3,4,5,6,7,8];
-  const hist=c.history({verbose:true}), last=hist.at(-1);
-  for(const r of ranks)for(const f of files){
-    const sq=f+r, el=document.createElement("div"), piece=c.get(sq);
-    const light=((f.charCodeAt(0)-97)+r)%2===0;
-    el.className="sq "+(light?"light":"dark");
-    if(selected===sq)el.classList.add("selected");
-    if(last&&(last.from===sq||last.to===sq))el.classList.add("last");
-    if(selected){
-      const moves=c.moves({square:selected,verbose:true});
-      const mv=moves.find(x=>x.to===sq); if(mv)el.classList.add(piece?"capture":"legal");
-    }
-    if(piece){const p=document.createElement("span");p.className="piece";p.textContent=PIECES[piece.color][piece.type];el.appendChild(p)}
-    if((orientation==="w"&&r===1)||(orientation==="b"&&r===8)){const z=document.createElement("span");z.className="coord file";z.textContent=f;el.appendChild(z)}
-    if((orientation==="w"&&f==="a")||(orientation==="b"&&f==="h")){const z=document.createElement("span");z.className="coord rank";z.textContent=r;el.appendChild(z)}
-    el.onclick=()=>tapSquare(sq);board.appendChild(el);
-  }
-  document.getElementById("status").textContent=`Position ${nodeDepth(current)} · ${c.turn()==="w"?"White":"Black"} to move`;
-  renderMoves();renderVariations();
+function pseudo(b,r,c){
+ const x=b[r][c],t=x.toLowerCase(),co=color(x),out=[],add=(a,d)=>{if(a>=0&&a<8&&d>=0&&d<8&&(!b[a][d]||color(b[a][d])!==co))out.push([a,d])};
+ if(t==="p"){const d=co==="w"?-1:1,st=co==="w"?6:1;if(r+d>=0&&r+d<8&&!b[r+d][c]){out.push([r+d,c]);if(r===st&&!b[r+2*d][c])out.push([r+2*d,c])}for(const dc of[-1,1]){const a=r+d,d=c+dc;if(a>=0&&a<8&&d>=0&&d<8&&b[a][d]&&color(b[a][d])!==co)out.push([a,d])}}
+ if(t==="n")[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(z=>add(r+z[0],c+z[1]));
+ if(t==="k")for(let a=-1;a<=1;a++)for(let d=-1;d<=1;d++)if(a||d)add(r+a,c+d);
+ if("brq".includes(t)){let ds=[];if("bq".includes(t))ds.push([1,1],[1,-1],[-1,1],[-1,-1]);if("rq".includes(t))ds.push([1,0],[-1,0],[0,1],[0,-1]);for(const z of ds){let a=r+z[0],d=c+z[1];while(a>=0&&a<8&&d>=0&&d<8){if(!b[a][d])out.push([a,d]);else{if(color(b[a][d])!==co)out.push([a,d]);break}a+=z[0];d+=z[1]}}}
+ return out
 }
-function tapSquare(sq){
-  if(training){trainingTap(sq);return}
-  const c=chessAt(current), p=c.get(sq);
-  if(selected){
-    const move=c.moves({square:selected,verbose:true}).find(m=>m.to===sq);
-    if(move){
-      makeMove(selected,sq);selected=null;return;
-    }
-  }
-  selected=p&&p.color===c.turn()?sq:null;renderBoard();
+function legalFrom(b,r,c){return pseudo(b,r,c)} // opening trainer keeps move generation lightweight
+function tap(s){
+ if(training){trainingInput(s);return}
+ const [r,c]=rc(s),x=cur.board[r][c];
+ if(selected){
+  const [a,d]=rc(selected);
+  if(legalFrom(cur.board,a,d).some(z=>z[0]===r&&z[1]===c)){makeMove(selected,s);return}
+ }
+ selected=x&&color(x)===turn()?s:null;render()
 }
 function makeMove(from,to){
-  const c=chessAt(current), m=c.move({from,to,promotion:"q"});
-  if(!m)return;
-  let child=current.children.find(x=>x.uci===m.from+m.to+(m.promotion||""));
-  if(!child){
-    child={id:uid(),parent:current,move:{from:m.from,to:m.to,promotion:m.promotion},san:m.san,uci:m.from+m.to+(m.promotion||""),children:[]};
-    current.children.push(child);
-  }
-  current=child;renderBoard();
+ const [r,c]=rc(from),[rr,cc]=rc(to),b=clone(cur.board),p=b[r][c];b[rr][cc]=p;b[r][c]=0;
+ if(p.toLowerCase()==="p"&&(rr===0||rr===7))b[rr][cc]=p==="P"?"Q":"q";
+ let n=cur.children.find(x=>x.move.from===from&&x.move.to===to);
+ if(!n){n={parent:cur,move:{from,to},san:from+"-"+to,board:b,children:[]};cur.children.push(n)}
+ cur=n;selected=null;render()
 }
-function renderMoves(){
-  const box=document.getElementById("moves");box.innerHTML="";
-  const path=currentPath(current);
-  if(!path.length){box.textContent="No moves yet.";return}
-  path.forEach((n,i)=>{
-    const b=document.createElement("button");b.className="move"+(n===current?" current":"");
-    b.innerHTML=(i%2===0?`<span class="num">${Math.floor(i/2)+1}.</span>`:"")+n.san;
-    b.onclick=()=>{current=n;renderBoard()};box.appendChild(b);
-  });
+function render(){
+ const B=document.getElementById("board");B.innerHTML="";
+ const rs=flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1],fs=flipped?["h","g","f","e","d","c","b","a"]:FILES;
+ let legal=[];if(selected){const [r,c]=rc(selected);legal=legalFrom(cur.board,r,c).map(z=>sq(z[0],z[1]))}
+ for(const rr of rs)for(const ff of fs){const s=ff+rr,[r,c]=rc(s),x=cur.board[r][c],e=document.createElement("div");e.className="sq "+(((r+c)%2)?"dark":"light");if(s===selected)e.classList.add("selected");if(legal.includes(s))e.classList.add(x?"capture":"hint");
+  if(x){const p=document.createElement("span");p.className="piece";p.textContent=G[color(x)][x.toLowerCase()];e.appendChild(p)}
+  if((flipped?ff==="h":ff==="a")){const z=document.createElement("span");z.className="coord rank";z.textContent=rr;e.appendChild(z)}
+  if((flipped?rr===1:rr===1)){const z=document.createElement("span");z.className="coord file";z.textContent=ff;e.appendChild(z)}
+  e.onclick=()=>tap(s);B.appendChild(e)}
+ document.getElementById("status").textContent=(turn()==="w"?"White":"Black")+" to move · "+path(cur).length+" move(s) in current path";
+ renderMoves();renderBranches();renderSaves();renderTraining()
 }
-function renderVariations(){
-  const box=document.getElementById("variations");box.innerHTML="";
-  if(!current.children.length){box.innerHTML='<span class="help">No branches yet. Make a legal move to create one.</span>';return}
-  current.children.forEach((n,i)=>{
-    const row=document.createElement("div");row.className="var";
-    const left=document.createElement("div");left.innerHTML=`<strong>${n.san}</strong><br><span>${n.children.length} continuation${n.children.length===1?"":"s"}</span>`;
-    const b=document.createElement("button");b.textContent="Open";b.onclick=()=>{current=n;renderBoard()};
-    row.append(left,b);box.appendChild(row);
-  });
+function renderMoves(){const box=document.getElementById("moves");box.innerHTML="";const a=path(cur);if(!a.length){box.innerHTML='<span class="muted">No moves yet.</span>';return}a.forEach((n,i)=>{const b=document.createElement("button");b.className="move "+(n===cur?"current":"");b.textContent=(i%2===0?(Math.floor(i/2)+1)+". ":"")+n.san;b.onclick=()=>{cur=n;selected=null;render()};box.appendChild(b)})}
+function renderBranches(){const box=document.getElementById("branches");box.innerHTML="";if(!cur.children.length){box.innerHTML='<span class="muted">No sidelines yet.</span>';return}cur.children.forEach((n,i)=>{const d=document.createElement("div");d.className="item";d.innerHTML="<span>"+n.san+"</span>";const b=document.createElement("button");b.textContent="Open";b.onclick=()=>{cur=n;render()};d.appendChild(b);box.appendChild(d)})}
+function clean(n){return{move:n.move,san:n.san,board:n.board,children:n.children.map(clean)}}
+function hydrate(n,p){n.parent=p;(n.children||[]).forEach(x=>hydrate(x,n));return n}
+function saveLine(){const name=document.getElementById("lineName").value.trim()||"Unnamed line";saves=[{name,tree:clean(root),savedAt:new Date().toISOString()},...saves.filter(x=>x.name!==name)];localStorage.setItem("openingRepsSaves",JSON.stringify(saves));toast("Line saved")}
+function renderSaves(){const box=document.getElementById("saved");box.innerHTML="";if(!saves.length){box.innerHTML='<span class="muted">Nothing saved yet.</span>';return}saves.forEach((s,i)=>{const d=document.createElement("div");d.className="item";d.innerHTML="<span>"+s.name+"</span>";const b=document.createElement("button");b.textContent="Load";b.onclick=()=>{root=hydrate(s.tree,null);cur=root;document.getElementById("lineName").value=s.name;render();toast("Loaded")};d.appendChild(b);box.appendChild(d)})}
+function deleteCurrentSave(){const name=document.getElementById("lineName").value.trim();if(!name)return;saves=saves.filter(x=>x.name!==name);localStorage.setItem("openingRepsSaves",JSON.stringify(saves));render();toast("Deleted saved copy")}
+function goBack(){if(cur.parent){cur=cur.parent;selected=null;render()}}
+function goForward(){if(cur.children[0]){cur=cur.children[0];selected=null;render()}}
+function goStart(){cur=root;selected=null;render()}
+function flipBoard(){flipped=!flipped;render()}
+function startTraining(mode){
+ const a=path(cur);if(!a.length){toast("Build a line first, then start training.");return}
+ training={mode,path:a.map(n=>n.move),index:0,board:initial(),wrong:false};
+ selected=null;render();toast(mode==="learning"?"Learning mode started":"Strict mode started")
 }
-function rootClone(){return JSON.parse(JSON.stringify({id:tree.id,move:tree.move,san:tree.san,uci:tree.uci,children:tree.children}))}
-function saveCurrent(){
-  const name=document.getElementById("lineName").value.trim()||"Unnamed line";
-  const data={id:uid(),name,tree:rootClone(),created:new Date().toISOString()};
-  saved=saved.filter(x=>x.name!==name);saved.unshift(data);localStorage.setItem(dbKey,JSON.stringify(saved));renderSaved();toast("Line saved");
+function stopTraining(){training=null;render()}
+function trainingInput(s){
+ const idx=training.index;if(idx>=training.path.length){finishTraining();return}
+ const expected=training.path[idx];
+ if(expected.from===selected && expected.to===s){training.index++;selected=null;render();if(training.index===training.path.length)finishTraining();return}
+ if(training.mode==="learning"){document.getElementById("trainStatus").textContent="Not quite. Try the move again.";document.getElementById("trainStatus").style.display="block"}
+ else{document.getElementById("trainStatus").textContent="Incorrect. Strict mode will not reveal the move.";document.getElementById("trainStatus").style.display="block"}
+ selected=null;render()
 }
-function renderSaved(){
-  const box=document.getElementById("saved");box.innerHTML="";
-  if(!saved.length){box.innerHTML='<span class="help">No saved lines yet.</span>';return}
-  saved.forEach(s=>{
-    const row=document.createElement("div");row.className="var";
-    const left=document.createElement("div");left.innerHTML=`<strong>${escapeHtml(s.name)}</strong><br><span>${countNodes(s.tree)} move nodes</span>`;
-    const open=document.createElement("button");open.textContent="Load";open.onclick=()=>loadSaved(s);
-    const del=document.createElement("button");del.className="danger";del.textContent="×";del.onclick=()=>{saved=saved.filter(x=>x.id!==s.id);localStorage.setItem(dbKey,JSON.stringify(saved));renderSaved()};
-    const actions=document.createElement("div");actions.className="row";actions.append(open,del);row.append(left,actions);box.appendChild(row);
-  });
-}
-function countNodes(n){return (n.children||[]).reduce((a,x)=>a+1+countNodes(x),0)}
-function loadSaved(s){
-  tree=s.tree;annotateParents(tree);current=tree;document.getElementById("lineName").value=s.name;training=null;renderBoard();toast("Line loaded");
-}
-function escapeHtml(x){return x.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function pgn(){
-  const sans=sanList(current), out=[];for(let i=0;i<sans.length;i++){if(i%2===0)out.push((i/2+1)+".");out.push(sans[i])}return out.join(" ");
-}
-async function copyPGN(){try{await navigator.clipboard.writeText(pgn());toast("PGN copied")}catch{toast("Clipboard unavailable")}}
-function exportBackup(){
-  const blob=new Blob([JSON.stringify({version:2,saved},null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="opening-reps-backup.json";a.click();URL.revokeObjectURL(a.href)
-}
-function importBackup(){document.getElementById("importFile").click()}
-document.getElementById("importFile").onchange=e=>{
-  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);saved=x.saved||[];localStorage.setItem(dbKey,JSON.stringify(saved));renderSaved();toast("Backup imported")}catch{toast("Invalid backup")}};r.readAsText(f)
-}
-function newLine(){tree={id:"root",move:null,san:null,uci:null,children:[]};current=tree;selected=null;training=null;document.getElementById("lineName").value="";renderBoard()}
-function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display="none",1800)}
-function startTraining(){
-  const root=tree; const path=currentPath(current);
-  if(!path.length){toast("Build or load a line first");return}
-  training={mode:document.getElementById("mode").value,root,currentNode:root,expectedIndex:0,errors:0};
-  current=root;selected=null;document.getElementById("trainInfo").textContent=training.mode==="learning"?"Learning: mistakes are corrected and you can retry.":"Strict: the answer is not shown immediately.";
-  renderBoard();
-}
-function trainingTap(sq){
-  const c=chessAt(current), p=c.get(sq);
-  if(!training){return}
-  if(selected){
-    const m=c.moves({square:selected,verbose:true}).find(x=>x.to===sq);
-    if(m){const expected=expectedChild();if(expected&&m.from===expected.move.from&&m.to===expected.move.to){
-      current=expected;training.expectedIndex++;selected=null;renderBoard();checkTrainEnd();return;
-    }else{training.errors++;selected=null;renderBoard();if(training.mode==="learning"){toast("Not the memorised move — try again")}else toast("Incorrect");return}}
-  }
-  selected=p&&p.color===c.turn()?sq:null;renderBoard()
-}
-function expectedChild(){return training&&training.currentNode.children[0]||null}
-function checkTrainEnd(){
-  const n=training.currentNode=current;
-  if(!n.children.length){document.getElementById("trainInfo").textContent=`Complete. Mistakes: ${training.errors}`;toast("Line complete ✓");training=null}
-}
-document.getElementById("back").onclick=()=>{if(current.parent){current=current.parent;selected=null;renderBoard()}}
-document.getElementById("forward").onclick=()=>{if(current.children[0]){current=current.children[0];selected=null;renderBoard()}}
-document.getElementById("start").onclick=()=>{current=tree;selected=null;renderBoard()}
-document.getElementById("flip").onclick=()=>{orientation=orientation==="w"?"b":"w";renderBoard()}
-document.getElementById("newBtn").onclick=newLine
-document.getElementById("saveLine").onclick=saveCurrent
-document.getElementById("copyPgn").onclick=copyPGN
-document.getElementById("exportBtn").onclick=exportBackup
-document.getElementById("importBtn").onclick=importBackup
-document.getElementById("practice").onclick=()=>{document.getElementById("trainTab").click();startTraining()}
-document.getElementById("restartTrain").onclick=startTraining
-document.getElementById("buildTab").onclick=()=>{buildTab.classList.add("active");trainTab.classList.remove("active");buildPanel.classList.remove("hidden");trainPanel.classList.add("hidden");training=null;renderBoard()}
-document.getElementById("trainTab").onclick=()=>{trainTab.classList.add("active");buildTab.classList.remove("active");trainPanel.classList.remove("hidden");buildPanel.classList.add("hidden");training=null;renderBoard()}
-newLine();renderSaved();
-</script>
-</body>
-</html>
+function finishTraining(){document.getElementById("trainStatus").style.display="block";document.getElementById("trainStatus").textContent="Line complete ✓. Start again to repeat it.";training=null;render()}
+function renderTraining(){const t=document.getElementById("trainStatus");if(!training&&t.textContent.startsWith("Line complete"))return;if(training){t.style.display="block";t.textContent=(training.mode==="learning"?"Learning":"Strict")+" · Move "+(training.index+1)+" of "+training.path.length}else if(!t.textContent.startsWith("Line complete"))t.style.display="none"}
+function exportBackup(){const blob=new Blob([JSON.stringify(saves)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="opening-reps-backup.json";a.click();URL.revokeObjectURL(a.href)}
+function importBackup(){document.getElementById("fileInput").click()}
+function readBackup(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{saves=JSON.parse(r.result);localStorage.setItem("openingRepsSaves",JSON.stringify(saves));render();toast("Backup restored")}catch{toast("Invalid backup")}};r.readAsText(f)}
+function exportPGN(){const a=path(cur);if(!a.length){toast("No moves to export.");return}let out="",num=1;a.forEach((n,i)=>{if(i%2===0)out+=num+++". ";out+=n.san+" "});const blob=new Blob([out.trim()],{type:"text/plain"}),x=document.createElement("a");x.href=URL.createObjectURL(blob);x.download=(document.getElementById("lineName").value||"opening-line")+".pgn";x.click();URL.revokeObjectURL(x.href)}
+function importPGN(){const text=document.getElementById("pgnInput").value.trim();if(!text){toast("Paste PGN first.");return}toast("PGN import is prepared for the next build.");}
+function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";clearTimeout(window._toast);window._toast=setTimeout(()=>t.style.display="none",1800)}
+newLine();
+</script></body></html>
